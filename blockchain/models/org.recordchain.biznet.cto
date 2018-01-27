@@ -1,4 +1,4 @@
-namespace org.sharedoc.network
+namespace org.recordchain.biznet
 
 asset SampleAsset identified by assetId {
   o String assetId
