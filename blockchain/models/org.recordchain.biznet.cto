@@ -1,46 +1,23 @@
 namespace org.recordchain.biznet
 
-asset SampleAsset identified by assetId {
-  o String assetId
-  --> SampleParticipant owner
-  o String value
-}
-
-participant SampleParticipant identified by participantId {
-  o String participantId
-  o String firstName
-  o String lastName
-}
-
-transaction SampleTransaction {
-  --> SampleAsset asset
-  o String newValue
-}
-
-event SampleEvent {
-  --> SampleAsset asset
-  o String oldValue
-  o String newValue
-}
-
-participant Patient identified by Id { //have to define users and their respective fields (making an object)
+participant Patient identified by Id { 
   o String Id
-  o String firstName
-  o String lastName
-  o String [] family
+  o String firstName optional
+  o String lastName optional
+  o String [] family optional
   o Boolean canApprove
-  o String email
+  o String email 
   o String phone
-  o String [] insurance
+  o String [] insurance optional
+  o String [] approvals optional
 }
 
 participant Doctor identified by Id {
   o String Id
   o String firstName
   o String lastName
-  o String [] approvals
-  o String [] requests
-  o Boolean canApprove
+  o String [] approvals optional
+  o String [] requests optional
   o String email
   o String phone
 }
@@ -56,7 +33,7 @@ participant Institution identified by Id {
 asset Record identified by Id{
   o String Id
   o String name
-  --> Patient patient //pointer to the patient
+  --> Patient patient
   o String [] drCanView
   o String [] ids
   o Doctor recordOwner
@@ -65,15 +42,15 @@ asset Record identified by Id{
 asset Procedure identified by Id{
   o String Id
   o String name
-  --> Patient patient //pointer to the patient
+  --> Patient patient
   --> Doctor doctor
   o String amount
 }
 
 transaction Request {
-  --> Patient patient
-  --> Doctor doctor optional
-  --> Institution institution optional
+  o String patient
+  o String doctor optional
+  o String institution optional
 }
 
 transaction ApproveReject {
@@ -88,7 +65,7 @@ transaction GrantAccess {
 }
 
 
-transaction view {
+transaction View {
   o String doctorId
   o String recordsId
 }

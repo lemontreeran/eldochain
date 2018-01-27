@@ -1,7 +1,18 @@
+/**
+ * Access control rules for tutorial-network
+ */
 rule Default {
     description: "Allow all participants access to all resources"
     participant: "ANY"
-    operation: ALL
+    operation: READ
+    resource: "org.recordchain.biznet.*"
+    action: ALLOW
+}
+
+rule Create {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: CREATE
     resource: "org.recordchain.biznet.*"
     action: ALLOW
 }
@@ -13,3 +24,12 @@ rule NetworkAdminUser {
     resource: "**"
     action: ALLOW
 }
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+

@@ -1,5 +1,5 @@
 var request = require('request');
-var assetchain = require('../assetchain.js');
+var assetchain = require('../smartContracts/recordchain.js');
 let namespace = "org.assetchain.biznet."
 
 
