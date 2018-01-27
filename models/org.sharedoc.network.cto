@@ -1,0 +1,94 @@
+namespace org.sharedoc.network
+
+asset SampleAsset identified by assetId {
+  o String assetId
+  --> SampleParticipant owner
+  o String value
+}
+
+participant SampleParticipant identified by participantId {
+  o String participantId
+  o String firstName
+  o String lastName
+}
+
+transaction SampleTransaction {
+  --> SampleAsset asset
+  o String newValue
+}
+
+event SampleEvent {
+  --> SampleAsset asset
+  o String oldValue
+  o String newValue
+}
+
+participant Patient identified by Id { //have to define users and their respective fields (making an object)
+  o String Id
+  o String firstName
+  o String lastName
+  o String [] family
+  o Boolean canApprove
+  o String email
+  o String phone
+  o String [] insurance
+}
+
+participant Doctor identified by Id {
+  o String Id
+  o String firstName
+  o String lastName
+  o String [] approvals
+  o String [] requests
+  o Boolean canApprove
+  o String email
+  o String phone
+}
+
+participant Institution identified by Id {
+  o String Id
+  o String name
+  o String [] requests
+  o String email
+  o String phone
+}
+
+asset Record identified by Id{
+  o String Id
+  o String name
+  --> Patient patient //pointer to the patient
+  o String [] drCanView
+  o String [] ids
+  o Doctor recordOwner
+}
+
+asset Procedure identified by Id{
+  o String Id
+  o String name
+  --> Patient patient //pointer to the patient
+  --> Doctor doctor
+  o String amount
+}
+
+transaction Request {
+  --> Patient patient
+  --> Doctor doctor optional
+  --> Institution institution optional
+}
+
+transaction ApproveReject {
+  --> Record record
+  o String userApproving
+  o Boolean approved
+}
+
+transaction GrantAccess {
+  --> Record record
+  --> Doctor doctorGranting
+}
+
+
+transaction view {
+  o String doctorId
+  o String recordsId
+}
