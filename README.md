@@ -2,13 +2,9 @@
 
 ## About
 Vishvajit
-
 	The final idea is to make a universal document controller that holds all different kind of document, files, etc that are confidential. Building this app via blockchain mechanism we can ensure that the file is accessible only to those with given permission (R/W) but it's different then gdrive
-
 	For example, if student wants to submit transcript to different universities, he/she has to first upload the unofficial document and then after approval he/she sends the official from uni which is chargeable. Instead of that, using our app user can create an account and he can request official transcript to the university and university is the only person allowed to upload the file. User can only read and share the link to other people who can read and share
-
 	This is very short example but this app is very useful in finance, government, medical and public sector where there is lots of sharing of document in paper(sealed documents). Using our app, we can go green and save the future!😂😀
-
 	Also, it's difficult to hack the blockchain as I am sure your all are aware of that.
 
 Uchi 
