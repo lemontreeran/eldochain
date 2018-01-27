@@ -41,7 +41,6 @@ dotenv.load();
 
 // routes ======================================================================
 require('./routes/auth.js')(app, passport); // load our routes and pass in our app and fully configured passport
-require('./routes/product.js')(app, passport); 
 require('./routes/role.js')(app, passport); 
 
 module.exports = app;
