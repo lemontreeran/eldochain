@@ -28,7 +28,7 @@ app.post("/_requestAccess", function(req, res) {
     else if(req.body['institution'] == undefined){
     req.checkBody('doctor', 'doctor must not be empty.').notEmpty()
     }
-  let errors = req.validationErrors()
+  let errors = req.validationErrors();
   if (errors){
     res.status(400).json({
       error: errors
@@ -46,7 +46,7 @@ app.post("/_requestAccess", function(req, res) {
   assetchain.requestAccess(_Request).then((x)=> {
     console.log("GOOD:=>\n",x) // Return OK response
     res.json({
-      message: "added " + req.body['patient'].join(" "),
+      message: "added " + req.body['patient'],
       added: true
     })
   }).catch((error) => {
@@ -64,6 +64,7 @@ app.get("/_ApproveReject", function(req, res) {
         req.checkBody('record', 'record must not be empty.').notEmpty();
         req.checkBody('userApproving', 'userApproving must not be empty.').notEmpty();
         req.checkBody('approved', 'approved must not be empty.').notEmpty();
+        let errors = req.validationErrors();
         
         if (errors){
           res.status(400).json({
@@ -100,6 +101,7 @@ app.get("/_ApproveReject", function(req, res) {
     if(req.isAuthenticated() || process.env.TEST_MODE == 1){
           req.checkBody('record', 'record must not be empty.').notEmpty();
           req.checkBody('doctorGranting', 'doctorGranting must not be empty.').notEmpty();
+          let errors = req.validationErrors();
           
           if (errors){
             res.status(400).json({
@@ -136,6 +138,7 @@ app.get("/_ApproveReject", function(req, res) {
       if(req.isAuthenticated() || process.env.TEST_MODE == 1){
             req.checkBody('user', 'user must not be empty.').notEmpty();
             req.checkBody('recordId', 'recordId must not be empty.').notEmpty();
+            let errors = req.validationErrors();
             
             if (errors){
               res.status(400).json({

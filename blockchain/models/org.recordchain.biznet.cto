@@ -33,7 +33,7 @@ participant Institution identified by Id {
 asset Record identified by Id{
   o String Id
   o String name
-  o String Patient patient
+  o String patient
   o String [] drCanView
   o String [] ids
   o Doctor recordOwner

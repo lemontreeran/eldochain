@@ -45,8 +45,13 @@ class RecordChain {
       this.patientRegistry = patientRegistry;
       return patientRegistry.get(Tnx.patient);
       }).then((patient) => {
-        console.log("app len", patient.approvals.length)
-        patient.approvals = patient.approvals & patient.approvals.length > 0 ? patient.approvals.push(Tnx.patient) : [Tnx.patient]
+        if (patient.approvals && (patient.approvals.length > 0)) {
+          patient.approvals.push(Tnx.patient)
+        } else {
+          patient.approvals = [];
+          patient.approvals.push(Tnx.patient)
+        }
+        // patient.approvals = (patient.approvals && (patient.approvals.length > 0)) ? patient.approvals.push(Tnx.patient) : [Tnx.patient]
         return this.patientRegistry.update(patient);
       }).then((updatedPatient) => {
         if (Tnx.doctor) {
@@ -55,7 +60,13 @@ class RecordChain {
             this.doctorRegistry = doctorRegistry;
             return doctorRegistry.get(Tnx.doctor);
           }).then((doctor) => {
-            doctor.requests = doctor.requests  & doctor.requests.length > 0 ? doctor.requests.push(Tnx.patient) : [Tnx.patient]
+            if (doctor.requests && (doctor.requests.length > 0)) {
+              doctor.requests.push(Tnx.patient)
+            } else {
+              doctor.requests = [];
+              doctor.requests.push(Tnx.patient)
+            }
+            // doctor.requests = doctor.requests  && doctor.requests.length > 0 ? doctor.requests.push(Tnx.patient) : [Tnx.patient]
             return this.doctorRegistry.update(doctor);
           })
           console.log("DONE")
@@ -185,11 +196,11 @@ class RecordChain {
     }
   }
 }
-RecordChain.requestAccess({
-  "$class": "org.recordchain.biznet.Request",
-  "doctor":"d1",
-  "patient":"p1"
-})
+// RecordChain.requestAccess({
+//   "$class": "org.recordchain.biznet.Request",
+//   "doctor":"d1",
+//   "patient":"p1"
+// })
 // RecordChain.approveReject({
 //   "$class": "org.recordchain.biznet.ApproveReject",
 //   "record":{"patient":"p1", "Id":"d1"},
