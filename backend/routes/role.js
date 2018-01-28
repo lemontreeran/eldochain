@@ -45,8 +45,7 @@ module.exports = function(app, passport) {
     assetchain.requestAccess(_Request).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
-        message: "added " + req.body['patient'],
-        added: true
+        message: "message " + x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
@@ -80,8 +79,7 @@ module.exports = function(app, passport) {
     assetchain.approveReject(_ApproveReject).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
-        message: "added " + req.body['record'],
-        added: true
+        message: "message " + x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
@@ -111,8 +109,7 @@ module.exports = function(app, passport) {
     assetchain.grantAccess(_GrantAccess).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
-        message: "added " + req.body['record'],
-        added: true
+        message: "message " + x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
@@ -142,7 +139,7 @@ module.exports = function(app, passport) {
     assetchain.view(view).then((x)=> {
       console.log("GOOD:=>", x) // Return OK response
       res.json({
-        "msg": x
+        message: "message " + x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
