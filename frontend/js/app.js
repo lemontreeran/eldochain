@@ -17,18 +17,10 @@ function($routeProvider) {
     }).when('/contact', {
         templateUrl : 'views/contact.html',
         controller : 'ListController'
+    }).when('/logout', {
+        templateUrl : 'views/includes/login.html',
+        controller : 'ListController'
 	}).otherwise({
 		redirectTo : '/login'
-	});
-}]);
-myApp.run(['$rootScope', '$location',
-function($rootScope, $location) {
-
-	$rootScope.$on('$routeChangeStart', function(event, currRoute, prevRoute) {
-		if (currRoute.originalPath == '/home') {
-			$rootScope.tog = 1;
-		} else {
-			$rootScope.tog = 2;
-		}
 	});
 }]);
