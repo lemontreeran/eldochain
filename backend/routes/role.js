@@ -155,7 +155,7 @@ module.exports = function(app, passport) {
   });
 
   app.post("/_msg", function(req, res) {
-    req.checkBody('doctorNumber', 'doctorId must not be empty.').notEmpty();
+    req.checkBody('doctorNumber', 'doctorNumber must not be empty.').notEmpty();
     req.checkBody('image', 'image must not be empty.').notEmpty();
     req.checkBody('patientId', 'patientId must not be empty.').notEmpty();
     let errors = req.validationErrors();

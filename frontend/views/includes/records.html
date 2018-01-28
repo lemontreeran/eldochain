@@ -27,7 +27,7 @@
                 <!-- <img ng-src="{{recordItem}}" class="img-thumbnail img-responsive center-block" height="64" width="100px"> -->
                 <button type="button" ng-click="setPreviewImg(recordItem)" class="btn standard-button"
                         data-toggle="modal"
-                        data-target="#exampleModalCenter"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;View
+                        data-target="#newModal"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;View
                 </button>
             </div>
         </div>
@@ -35,12 +35,12 @@
 </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+<div class="modal fade" id="newModal" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Patient {{patientId}}</h5>
+                <h5 class="modal-title">Patient {{patientId}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -52,7 +52,7 @@
                 <label>Phone number to send to:</label>
                 <input type="number" ng-model="doctorNumber" class="form-control" placeholder="Enter phone number">
                 <div class="modal-footer">
-                    <button type="button" ng-click="approvePatient(json,false)"
+                    <button type="button"
                             class="btn btn-outline-danger" data-dismiss="modal">Close
                     </button>
                     <button type="button" ng-disabled="!doctorNumber" ng-click="sendMessage([doctorNumber,previewImg,patientId])" class="btn btn-outline-info">

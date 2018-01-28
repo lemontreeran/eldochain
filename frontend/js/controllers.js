@@ -242,7 +242,7 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
         $http({
             url: 'http://54.209.93.68:3000/_msg',
             method: "POST",
-            data: {doctorId: d[0], image:d[1], patientId:d[2]}
+            data: {doctorNumber: d[0], image:d[1], patientId:d[2]}
         })
         .then(function(response) {
             console.log(response.data);
@@ -253,7 +253,7 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
         function(response) { // optional
             console.log(response.data);
             $scope.requesting = false;
-            alert('There was an error while submitting request.');
+            alert('There was an error while submitting request.' + response);
         });
 
     }
