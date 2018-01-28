@@ -57,7 +57,7 @@ module.exports = function(app, passport) {
     })
   });
 
-  app.post("/_ApproveReject", function(req, res) {
+  app.post("/_approveReject", function(req, res) {
     console.log("Here")
     req.checkBody('record', 'record must not be empty.').notEmpty();
     req.checkBody('userApproving', 'userApproving must not be empty.').notEmpty();
@@ -93,7 +93,7 @@ module.exports = function(app, passport) {
     })
   });
 
-  app.get("/_GrantAccess", function(req, res) {
+  app.get("/_grantAccess", function(req, res) {
     req.checkBody('record', 'record must not be empty.').notEmpty();
     req.checkBody('doctorGranting', 'doctorGranting must not be empty.').notEmpty();
     let errors = req.validationErrors();
@@ -125,9 +125,9 @@ module.exports = function(app, passport) {
     })
   });
 
-  app.get("/_View", function(req, res) {
-    req.checkBody('user', 'user must not be empty.').notEmpty();
-    req.checkBody('recordId', 'recordId must not be empty.').notEmpty();
+  app.post("/_view", function(req, res) {
+    req.checkBody('doctorId', 'doctorId must not be empty.').notEmpty();
+    req.checkBody('recordsId', 'recordsId must not be empty.').notEmpty();
     let errors = req.validationErrors();
     
     if (errors){
@@ -135,23 +135,21 @@ module.exports = function(app, passport) {
         error: errors
       })
     } 
-    let _GrantAccess = {
+    let view = {
       "$class": namespace + "View",
-      "user": req.body['user'] , 
-      "recordId": req.body['recordId'] , 
-      
-      
+      "recordsId": req.body['recordsId'] , 
+      "doctorId": req.body['doctorId']
     };
-    assetchain.assignRole(_View).then((x)=> {
-      console.log("GOOD:=>\n",x) // Return OK response
+
+    assetchain.view(view).then((x)=> {
+      console.log("GOOD:=>", x) // Return OK response
       res.json({
-        message: "added " + req.body['user'].join(" "),
-        added: true
+        "msg": x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
       res.status(400).json({
-        message: "Not added",
+        message: "Not done",
         added: false
       })
     })
