@@ -167,12 +167,17 @@ module.exports = function(app, passport) {
       process.env.TWILIO_ACCOUNT_SID,
       process.env.TWILIO_AUTH_TOKEN
     );
-     
     client.messages.create({
       from: process.env.TWILIO_PHONE_NUMBER,
       to: process.env.CELL_PHONE_NUMBER,
-      body: "You just sent an SMS from Node.js using Twilio!"
-    }).then((messsage) => console.log(message.sid));
+      body: "Image for patient " + req.body.patientId  + "\n---------------\n\n" + req.body.image
+    }).then((messsage) => {
+      console.log(message.sid)
+      res.json({
+        message: "message sent",
+        sent: true
+      })
+    });
 
   });
 }
