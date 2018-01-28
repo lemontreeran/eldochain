@@ -309,4 +309,39 @@ class RecordChain {
 
 }
 
+// TO SUBMIT NEW REQUEST
+// RecordChain.requestAccess({
+//   "$class": "org.recordchain.biznet.Request",
+//   "doctor":"d1",
+//   "patient":"p2"
+// })
+
+
+// TO APPROVE/REJECT A REQUEST
+// RecordChain.approveReject({
+//   "$class": "org.recordchain.biznet.ApproveReject",
+//   "record":{"patientId":"p1", "id":"p"},
+//   "approved":true
+// })
+
+
+// TO GRANT ACCESS REQUEST
+// RecordChain.grantAccess({
+//   "$class": "org.recordchain.biznet.GrantAccess",
+//   "record": {
+//     "$class": "org.recordchain.biznet.Record",
+//     "patientId": "p2",
+//     "name": "string",
+//     "recordOwner": "resource:org.recordchain.biznet.Doctor#d2"
+//   },
+//   "granted":true
+// })
+
+// TO CHECK IF DOCTOR CAN VIEW
+// RecordChain.view ({
+//   "$class": "org.recordchain.biznet.View",
+//   "doctorId": "d2",
+//   "recordsId":"p2"
+// })
+
 module.exports = RecordChain;
