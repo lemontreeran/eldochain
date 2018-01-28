@@ -169,7 +169,7 @@ class RecordChain {
   */
   _grantAccess(Tnx) {
     console.log(Tnx)
-    if (Tnx.granted == true) {
+    if (Tnx.granted) {
       return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Doctor')
       .then((doctorRegistry) => {
         this.doctorRegistry = doctorRegistry;
@@ -223,7 +223,7 @@ class RecordChain {
     } else {
       console.log("Not approved false")
       return new Promise((resolve, reject)=> {
-          resolve({"approved": false, "message":"Approval declined"});
+          resolve({"approved": false, "message":"granting declined"});
       });
     }
   }
@@ -249,7 +249,6 @@ class RecordChain {
       this.recordRegistry = recordRegistry;
       return recordRegistry.get(Tnx.recordsId);
     }).then((record) => {
-      console.log(record)
       if (record.drCanView && (record.drCanView.length > 0)) {
         console.log(record.drCanView)
         console.log(Tnx.doctorId)
@@ -328,7 +327,7 @@ class RecordChain {
 
 // TO GRANT ACCESS REQUEST
 // RecordChain.grantAccess({
-//   "$class": "org.recordchain.biznet.ApproveReject",
+//   "$class": "org.recordchain.biznet.GrantAccess",
 //   "record": {
 //     "$class": "org.recordchain.biznet.Record",
 //     "patientId": "p2",

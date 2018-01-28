@@ -45,8 +45,7 @@ module.exports = function(app, passport) {
     assetchain.requestAccess(_Request).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
-        message: "added " + req.body['patient'],
-        added: true
+        message: x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
@@ -72,7 +71,6 @@ module.exports = function(app, passport) {
     let _ApproveReject = {
       "$class": namespace + "ApproveReject",
       "record": req.body['record'] , 
-      "userApproving": req.body['userApproving'] , 
       "approved": req.body['approved'] , 
       
       
@@ -81,8 +79,7 @@ module.exports = function(app, passport) {
     assetchain.approveReject(_ApproveReject).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
-        message: "added " + req.body['record'].join(" "),
-        added: true
+        message: x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
@@ -93,9 +90,9 @@ module.exports = function(app, passport) {
     })
   });
 
-  app.get("/_grantAccess", function(req, res) {
+  app.post("/_grantAccess", function(req, res) {
     req.checkBody('record', 'record must not be empty.').notEmpty();
-    req.checkBody('doctorGranting', 'doctorGranting must not be empty.').notEmpty();
+    req.checkBody('granted', 'granted must not be empty.').notEmpty();
     let errors = req.validationErrors();
     
     if (errors){
@@ -103,18 +100,19 @@ module.exports = function(app, passport) {
         error: errors
       })
     } 
-    let _GrantAccess = {
+    let grant = {
       "$class": namespace + "GrantAccess",
       "record": req.body['record'] , 
-      "doctorGranting": req.body['doctorGranting'] , 
-      
-      
+      "granted": req.body['granted'] , 
+      "doctorGranting": req.body['doctorGranting'] || ""
     };
-    assetchain.assignRole(_GrantAccess).then((x)=> {
+
+    console.log(grant)
+    
+    assetchain.grantAccess(grant).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
-        message: "added " + req.body['record'].join(" "),
-        added: true
+        message:  x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
@@ -144,7 +142,7 @@ module.exports = function(app, passport) {
     assetchain.view(view).then((x)=> {
       console.log("GOOD:=>", x) // Return OK response
       res.json({
-        "msg": x
+        message:  x
       })
     }).catch((error) => {
       console.log("BAD:=>\n", error) // Return error response
