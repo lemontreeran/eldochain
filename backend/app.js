@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var expressValidator = require('express-validator');
 
 app.use(express.static(__dirname + '/public'));
+var cors = require('cors')
 
 var dotenv = require('dotenv');
 dotenv.load();
@@ -25,6 +26,7 @@ app.use(session({
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors())
 
 //Body-parser
 var bodyParser = require('body-parser');
