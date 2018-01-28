@@ -1,6 +1,7 @@
 var request = require('request');
-var assetchain = require('../assetchain.js');
-let namespace = "org.shareedoc.sample."
+let namespace = "org.recordchain.biznet."
+var assetchain = require('../smartContracts/recordchain.js');
+
 
 
 
@@ -17,45 +18,44 @@ module.exports = function(app, passport) {
 
   })
 
-app.get("/_Request", function(req, res) {
+app.post("/_requestAccess", function(req, res) {
+  console.log("Here")
+  req.checkBody('patient', 'patient must not be empty.').notEmpty();
 
-if(req.isAuthenticated() || process.env.TEST_MODE == 1){
-      req.checkBody('patient', 'patient must not be empty.').notEmpty();
+  if(req.body['doctor'] == undefined){
+    req.checkBody('institution', 'institution must not be empty.').notEmpty();
+    }
+    else if(req.body['institution'] == undefined){
+    req.checkBody('doctor', 'doctor must not be empty.').notEmpty()
+    }
+  let errors = req.validationErrors()
+  if (errors){
+    res.status(400).json({
+      error: errors
+    })
+  } 
+  let _Request = {
+    "$class": namespace + "Request",
+    "patient" : req.body['patient'] , 
+    "doctor": req.body['doctor'] , 
+    "institution": req.body['institution'] ,
+    
+  };
 
-      if(req.body['doctor'] == undefined){
-        req.checkBody('institution', 'institution must not be empty.').notEmpty();
-       }
-       else if(req.body['institution'] == undefined){
-        req.checkBody('doctor', 'doctor must not be empty.').notEmpty()
-       }
-      
-      if (errors){
-        res.status(400).json({
-          error: errors
-        })
-      } 
-      let _Request = {
-        "$class": namespace + "Request",
-        "patient" : req.body['patient'] , 
-        "doctor": req.body['doctor'] , 
-        "institution": req.body['institution'] ,
-        
-      };
-      assetchain.assignRole(_Request).then((x)=> {
-        console.log("GOOD:=>\n",x) // Return OK response
-        res.json({
-          message: "added " + req.body['patient'].join(" "),
-          added: true
-        })
-      }).catch((error) => {
-        console.log("BAD:=>\n", error) // Return error response
-        res.status(400).json({
-          message: "Not added",
-          added: false
-        })
-      })
-
-}
+  console.log("in")
+  assetchain.requestAccess(_Request).then((x)=> {
+    console.log("GOOD:=>\n",x) // Return OK response
+    res.json({
+      message: "added " + req.body['patient'].join(" "),
+      added: true
+    })
+  }).catch((error) => {
+    console.log("BAD:=>\n", error) // Return error response
+    res.status(400).json({
+      message: "Not added",
+      added: false
+    })
+  })
 });
 
 app.get("/_ApproveReject", function(req, res) {

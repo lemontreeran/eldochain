@@ -1,11 +1,11 @@
 'use strict';
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
-const composer_common = require('composer-common');
+
 // these are the credentials to use to connect to the Hyperledger Fabric
-let cardname = "admin@c-net";
+let cardname = "admin@recordchain";
 
 /** Class for the asset registry*/
-class AssetRegistry {
+class RecordChain {
 
   /**
    * Need to have the mapping from bizNetwork name to the URLs to connect to.
@@ -14,7 +14,6 @@ class AssetRegistry {
    */
    constructor() {
     this.bizNetworkConnection = new BusinessNetworkConnection();
-    console.log("cons")
   }
 
   /** @description Initalizes the LandRegsitry by making a connection to the Composer runtime
@@ -29,7 +28,7 @@ class AssetRegistry {
       return this.bizNetworkConnection.connect(cardname)
       .then((result) => {
         this.businessNetworkDefinition = result;
-        console.log('c-net:<init>', 'businessNetworkDefinition obtained', this.businessNetworkDefinition.getIdentifier());
+        console.log('recordchain:<init>', 'businessNetworkDefinition obtained', this.businessNetworkDefinition.getIdentifier());
       }).catch(function (error) {
           console.log(error)
           throw error;
@@ -84,52 +83,57 @@ class AssetRegistry {
       return registry._assignRole(Assign);
     })
   }
-// transaction GetRoles {
-//     --> User user
-// }
 
-
-  /** Gets the roles of a user..
+  /** Request Access to a patient record..
       @return {Promise} resolved when this update has completed
   */
-  _userRoles(Role) {
-    return this.bizNetworkConnection.getAssetRegistry('org.assetchain.biznet.Role')
-    .then((RoleRegistry)=> {
-      this.RoleRegistry = RoleRegistry;
-
-      return RoleRegistry.getAll();
-    }).then ((roles)=> {
-      console.log(roles)
-      var factory = this.businessNetworkDefinition.getFactory();
-      let user = factory.newRelationship('org.assetchain.biznet', 'User', Role.user)
-      console.log(user.getIdentifier())
-
-      var userRoles = roles.filter(function( role ) {
-        return role.members.indexOf(user.getIdentifier()) >= 0;
-      }).map(function(obj) {
-          return {
-            id: obj.id, 
-            name: obj.name
-          };
-      });
-      let serializer = this.businessNetworkDefinition.getSerializer();
-      return new Promise((resolve, reject)=> {
-        // resolve(serializer.fromJSON(userRoles));
-        resolve(userRoles);
-      });
-    })
+  _requestAccess(Tnx) {
+    return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Patient')
+    .then((patientRegistry) => {
+      this.patientRegistry = patientRegistry;
+      this.requester = Tnx.doctor || doctor.institution
+      return patientRegistry.get(Tnx.patient);
+      }).then((patient) => {
+        console.log("app len", patient.approvals.length)
+        patient.approvals = patient.approvals & patient.approvals.length > 0 ? patient.approvals.push(this.requester) : [this.requester]
+        return this.patientRegistry.update(patient);
+      }).then((updatedPatient) => {
+        if (Tnx.doctor) {
+          return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Doctor')
+          .then((doctorRegistry) => {
+            this.doctorRegistry = doctorRegistry;
+            return doctorRegistry.get(Tnx.doctor);
+          }).then((doctor) => {
+            doctor.requests = doctor.requests  & doctor.requests.length > 0 ? doctor.requests.push(Tnx.patient) : [Tnx.patient]
+            return this.doctorRegistry.update(doctor);
+          })
+        } else {
+          return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Institution')
+          .then((institutionRegistry) => {
+            console.log("Got institution Registry", institutionRegistry)
+            this.institutionRegistry = institutionRegistry;
+            return institutionRegistry.get(Tnx.institution);
+          }).then((institution) => {
+            institution.requests = institution.requests ? institution.requests.push(Tnx.patient) : [Tnx.patient]
+            return this.institutionRegistry.update(institution);
+          })
+          console.log("DONE")
+        }
+      }).catch((error) => {
+        console.log("ERROR:\n\n",error)
+    });
   }
 
   /** External _userRoles function..
       @return {Promise} resolved when this update has completed
   */
-  static userRoles(Role) {
-    let registry = new AssetRegistry('c-net');
+  static requestAccess(Tnx) {
+    let registry = new RecordChain('recordchain');
     return registry.init()
     .then(() => {
-      return registry._userRoles(Role);
+      return registry._requestAccess(Tnx);
     })
   }
 
 }
-module.exports = AssetRegistry;
+module.exports = RecordChain;
