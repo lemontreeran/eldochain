@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6 offset-md-3 text-center">
+            <div class="card card-default">
+                <div class="card-heading text-center">
+                    <img src="images/imac_yellow.svg" height="200" width="200"></div>
+                <h1>Contact Us</h1>
+                <div class="card-body">
+                    <form class="form-horizontal" name="contactUs">
+
+                        <div class="form-group">
+                            <label for="email" class="col-md-12 control-label">E-Mail Address</label>
+
+                            <div class="col-md-12">
+                                <input id="email" type="email" class="form-control" name="email"
+                                       value="{{ old('email') }}" required autofocus>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="feedback" class="col-md-12 control-label">Feedback</label>
+
+                            <div class="col-md-12">
+                                <textarea id="feedback" class="form-control" name="feedback" required
+                                          minlength="10"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn standard-button" onclick="showContact()">
+                                    <i class="fa fa-paper-plane" aria-hidden="true"></i>Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
