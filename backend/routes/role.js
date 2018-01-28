@@ -171,7 +171,7 @@ module.exports = function(app, passport) {
     );
     client.messages.create({
       from: process.env.TWILIO_NUM,
-      to: doctorNumber,
+      to: req.body.doctorNumber,
       body: "Image for patient " + req.body.patientId  + "\n---------------\n\n" + req.body.image
     }).then((messsage) => {
       console.log(message.sid)
