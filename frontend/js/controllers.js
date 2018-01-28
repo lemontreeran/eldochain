@@ -234,6 +234,10 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
         $rootScope.historian();
     }
 
+    $scope.setPreviewImg = function (img) {
+        $rootScope.previewImg = img;
+    }
+
 
 
     $rootScope.randomDate = function(date1, date2){

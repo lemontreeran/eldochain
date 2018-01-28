@@ -11,24 +11,52 @@
                 <label></label>Patient id:
                 <input type="text" ng-model="patientId" class="form-control" placeholder="Enter patient ID">
                 <br>
-              <!--   <label></label>Send to number:
-                <input type="number" ng-model="doctorNumber" class="form-control" placeholder="Enter phone number"> -->
             </div>
             <div class="modal-footer">
                 <button class="btn standard-button" ng-click="showDocument()">Pull record</button>
             </div>
         </form>
     </div>
-    <div class="row" ng-if="false">
-        <div class="col-lg-3 col-md-6 col-xs-12" ng-repeat="record in approvals track by $index">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{record}}</h5>
-                    <p class="card-text">User file generated: {{randomDate('01/27/2018','01/28/2018')}}</p>
-                    <button type="button" ng-click="patientRecord(record)" class="btn standard-button"
-                            data-toggle="modal"
-                            data-target="#exampleModalCenter"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;Show
-                        Details
+    <hr>
+</div>
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-xs-12" ng-repeat="recordItem in json.message.data track by $index">
+        <div class="card" style="min-height: 150px !important;max-height: 150px !important;margin-bottom: 20px; padding: 0">
+            <div class="card-body thumbnail"><p>
+                <a href="{{recordItem}}" style="font-size: 7px;line-height: 0.5" target="_blank">{{recordItem}}</a></p>
+                <!-- <img ng-src="{{recordItem}}" class="img-thumbnail img-responsive center-block" height="64" width="100px"> -->
+                <button type="button" ng-click="setPreviewImg(recordItem)" class="btn standard-button"
+                        data-toggle="modal"
+                        data-target="#exampleModalCenter"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;View
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Patient {{patientId}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center center-block">
+                <img ng-src="{{previewImg}}" class="img-thumbnail img-fluid">
+                <hr>
+
+                <label>Phone number to send to:</label>
+                <input type="number" ng-model="doctorNumber" class="form-control" placeholder="Enter phone number">
+                <div class="modal-footer">
+                    <button type="button" ng-click="approvePatient(json,false)"
+                            class="btn btn-outline-danger" data-dismiss="modal">Close
+                    </button>
+                    <button type="button" ng-disabled="!doctorNumber" ng-click="sendMessage(previewImg,doctorNumber)" class="btn btn-outline-info">
+                        Send to mobile
                     </button>
                 </div>
             </div>

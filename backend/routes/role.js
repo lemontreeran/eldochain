@@ -152,6 +152,28 @@ module.exports = function(app, passport) {
       })
     })
 
+  app.post("/_msg", function(req, res) {
+    req.checkBody('doctorId', 'doctorId must not be empty.').notEmpty();
+    req.checkBody('image', 'image must not be empty.').notEmpty();
+    req.checkBody('patientId', 'patientId must not be empty.').notEmpty();
+    let errors = req.validationErrors();
+    
+    if (errors){
+      res.status(400).json({
+        error: errors
+      })
+    } 
+    const client = require('twilio')(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+     
+    client.messages.create({
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: process.env.CELL_PHONE_NUMBER,
+      body: "You just sent an SMS from Node.js using Twilio!"
+    }).then((messsage) => console.log(message.sid));
+
   });
 }
 //-------------------------------------------------------------------------------------------------------
