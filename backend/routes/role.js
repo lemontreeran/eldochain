@@ -108,7 +108,7 @@ module.exports = function(app, passport) {
       
       
     };
-    assetchain.assignRole(_GrantAccess).then((x)=> {
+    assetchain.grantAccess(_GrantAccess).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
         message: "added " + req.body['record'],
