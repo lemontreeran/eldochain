@@ -254,38 +254,42 @@ class RecordChain {
         console.log(record.drCanView)
         console.log(Tnx.doctorId)
         if (record.drCanView.indexOf(Tnx.doctorId) > -1) {
-          console.log("canView", true)
-          let url = 'https://api.github.com/repos/uchibeke/dhare/contents/_/_/_/f/i/l/e/s/' + Tnx.recordsId;
-          request({
-          headers: {
-              'User-Agent': 'MY IPHINE 7s'
-            },
-            uri: url,
-            method: 'GET'
-          }, function (err, res, body) {
-            let json = JSON.parse(body);
-            json = json.map(function(value) {
-              return value.download_url;
+          console.log("canView1", true)
+          return new Promise(function(resolve, reject){
+            let url = 'https://api.github.com/repos/uchibeke/dhare/contents/_/_/_/f/i/l/e/s/' + Tnx.recordsId;
+            request({
+            headers: {
+                'User-Agent': 'MY IPHINE 7s'
+              },
+              uri: url,
+              method: 'GET'
+            }, (err, res, body) => {
+              if (err) return reject(err);
+              try {
+                let json = JSON.parse(body);
+                json = json.map(function(value) {
+                  return value.download_url;
+                });
+                return resolve({"canView": true, "data": json});
+              } catch(e) {
+                return reject(e);
+              }
             });
-            console.log(json);
-            return new Promise((resolve, reject)=> {
-              resolve({"canView": true, "documents": json});
-            })  
           });
         } else {
-          console.log("canView", false)
+          console.log("canView3", false)
           return new Promise((resolve, reject)=> {
             resolve({"canView": false});
           })  
         }
       } else {
-        console.log("canView", false)
+        console.log("canView4", false)
         return new Promise((resolve, reject)=> {
           resolve({"canView": false});
         })  
       }
     }).catch((view) => {
-      console.log("canView", false)
+      console.log("canView5", false)
       return new Promise((resolve, reject)=> {
         resolve({"canView": false});
       })  
@@ -335,10 +339,10 @@ class RecordChain {
 // })
 
 // TO CHECK IF DOCTOR CAN VIEW
-RecordChain.view ({
-  "$class": "org.recordchain.biznet.View",
-  "doctorId": "d2",
-  "recordsId":"p2"
-})
+// RecordChain.view ({
+//   "$class": "org.recordchain.biznet.View",
+//   "doctorId": "d2",
+//   "recordsId":"p2"
+// })
 
 module.exports = RecordChain;
