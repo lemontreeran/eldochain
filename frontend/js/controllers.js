@@ -1,10 +1,18 @@
-var guestControllers = angular.module('guestControllers', [])
+var guestControllers = angular.module('guestControllers', ['ngStorage'])
 
-guestControllers.controller('ListController', ['$rootScope','$scope', '$http', '$timeout', '$location',
-function($rootScope, $scope, $http, $timeout, $location) {
+guestControllers.controller('ListController', ['$rootScope','$scope', '$http', '$timeout', '$location', '$localStorage',
+function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
 	// $rootScope.userId = $scope.userId || 'vishvajit79@gmail.com';
-    $rootScope.userId = $scope.userId;
-    $rootScope.userId = 'vishvajit79@gmail.com';
+
+    var ss = $localStorage;
+    $scope.$storage = $localStorage;
+
+    if($scope.userId != null){
+        $scope.$storage.user = $scope.userId;
+    }
+
+    $rootScope.userId = $scope.$storage.user;
+
     $rootScope.userLogin = function() {
         $rootScope.userId = $scope.userId;
         userId = $scope.userId;
@@ -13,7 +21,7 @@ function($rootScope, $scope, $http, $timeout, $location) {
     };
 
     $rootScope.logoutRequest = function () {
-        $rootScope.userId = null;
+        $localStorage.$reset();
         $location.path('/');
     };
 
@@ -31,6 +39,7 @@ function($rootScope, $scope, $http, $timeout, $location) {
 		popupWin.document.write('<html><link rel="stylesheet" media="all" href="css/style.css"><link href="css/limestone.css" rel="stylesheet"  media="all"></head><body onload="window.print()">' + printContents + '</html>');
 		popupWin.document.close();
 	};
+
 	$scope.printpage = function() {
 		var originalContents = document.body.innerHTML;
 		var printReport = document.getElementById('content').innerHTML;
@@ -42,6 +51,7 @@ function($rootScope, $scope, $http, $timeout, $location) {
 		window.history.back();
 	};
 
+    $scope.pateintId = 'vishvajit79@gmail.com';
 
     $rootScope.sendRequest = function() {
     	var data = { 'doctor' : $rootScope.userId, 'patient': $scope.patientId};
@@ -64,7 +74,27 @@ function($rootScope, $scope, $http, $timeout, $location) {
 		console.log(data);
     };
 
-    $rootScope.userDetails = function() {
+    $rootScope.patientDetails = function() {
+        var data = { 'pateintId' : $rootScope.userId};
+        $scope.requesting = true;
+        $http({
+            url: 'http://54.209.93.68:30001/api/Patient/' + data['pateintId'],
+            method: "GET"
+        })
+            .then(function(response) {
+                    $scope.approvals = response.data.approvals;
+                    $scope.json = response.data;
+                    $scope.requesting = false;
+
+                },
+                function(response) { // optional
+                    console.log(response.data);
+                    $scope.requesting = false;
+                    alert('There was an error while submitting request.');
+                });
+    };
+
+    $rootScope.doctorDetails = function() {
         var data = { 'doctorId' : $rootScope.userId};
         $scope.requesting = true;
         $http({
@@ -72,7 +102,6 @@ function($rootScope, $scope, $http, $timeout, $location) {
             method: "GET"
         })
 		.then(function(response) {
-				console.log(response.data);
 				$scope.approvals = response.data.approvals;
 				$scope.json = response.data;
 				$scope.requesting = false;
@@ -83,9 +112,8 @@ function($rootScope, $scope, $http, $timeout, $location) {
 			$scope.requesting = false;
 			alert('There was an error while submitting request.');
 		});
-        console.log(data);
     };
-    $scope.userDetails();
+
     $rootScope.patientRecord = function($id) {
         $scope.requesting = true;
         $http({
@@ -150,6 +178,7 @@ function($rootScope, $scope, $http, $timeout, $location) {
     $rootScope.showDocument = function () {
     	var data = {'doctorId': $rootScope.userId, 'recordsId': $rootScope.userId}
         $scope.requesting = true;
+    	console.log(data);
         $http({
             url: 'http://54.209.93.68:3000/_view',
             method: "POST",
@@ -167,7 +196,6 @@ function($rootScope, $scope, $http, $timeout, $location) {
                     alert('There was an error while submitting request.');
                 });
     };
-    $rootScope.showDocument();
 
     $rootScope.historian = function () {
         $scope.requesting = true;
@@ -176,7 +204,6 @@ function($rootScope, $scope, $http, $timeout, $location) {
             method: "GET"
         })
             .then(function(response) {
-                    console.log(response.data);
                     $scope.historian = response.data;
                     $scope.requesting = false;
 
@@ -187,5 +214,27 @@ function($rootScope, $scope, $http, $timeout, $location) {
                     alert('There was an error while submitting request.');
                 });
     };
-    $rootScope.historian();
+
+    if($rootScope.userId != null){
+        $rootScope.patientDetails();
+        $rootScope.doctorDetails();
+        $rootScope.showDocument();
+        $rootScope.historian();
+    }
+
+    $rootScope.randomDate = function(date1, date2){
+        function getRandomArbitrary(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+        var date1 = date1 || '01-01-1970'
+        var date2 = date2 || new Date().toLocaleDateString()
+        date1 = new Date(date1).getTime()
+        date2 = new Date(date2).getTime()
+        if( date1>date2){
+            return new Date(getRandomArbitrary(date2,date1)).toLocaleDateString()
+        } else{
+            return new Date(getRandomArbitrary(date1, date2)).toLocaleDateString()
+
+        }
+    };
 }]);

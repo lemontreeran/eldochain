@@ -18,8 +18,8 @@
             </li>
         </ul>
         <ul class="navbar-nav my-2 my-lg-0 pr-5">
-                    <li class="nav-item" ng-if="userId">{{username}}
-                        <a href="" class="nav-link" ng-click="logoutRequest()"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
+                    <li class="nav-item" ng-if="$storage.user">
+                        <a href="" class="nav-link" ng-click="logoutRequest()">{{$storage.user}} &nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
                     </li>
                 </ul>
     </div>
