@@ -169,7 +169,6 @@ class RecordChain {
   */
   _grantAccess(Tnx) {
     console.log(Tnx)
-    console.log(Tnx)
     if (Tnx.granted) {
       return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Doctor')
       .then((doctorRegistry) => {

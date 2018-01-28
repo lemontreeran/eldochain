@@ -100,15 +100,16 @@ module.exports = function(app, passport) {
         error: errors
       })
     } 
-    let _GrantAccess = {
+    let grant = {
       "$class": namespace + "GrantAccess",
       "record": req.body['record'] , 
       "granted": req.body['granted'] , 
-      "doctorGranting": req.body['doctorGranting'] || "" , 
-      
-      
+      "doctorGranting": req.body['doctorGranting'] || ""
     };
-    assetchain.grantAccess(_GrantAccess).then((x)=> {
+
+    console.log(grant)
+    
+    assetchain.grantAccess(grant).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
         message:  x
