@@ -249,7 +249,6 @@ class RecordChain {
       this.recordRegistry = recordRegistry;
       return recordRegistry.get(Tnx.recordsId);
     }).then((record) => {
-      console.log(record)
       if (record.drCanView && (record.drCanView.length > 0)) {
         console.log(record.drCanView)
         console.log(Tnx.doctorId)
