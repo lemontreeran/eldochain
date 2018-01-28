@@ -155,7 +155,7 @@ module.exports = function(app, passport) {
   });
 
   app.post("/_msg", function(req, res) {
-    req.checkBody('doctorId', 'doctorId must not be empty.').notEmpty();
+    req.checkBody('doctorNumber', 'doctorId must not be empty.').notEmpty();
     req.checkBody('image', 'image must not be empty.').notEmpty();
     req.checkBody('patientId', 'patientId must not be empty.').notEmpty();
     let errors = req.validationErrors();
@@ -170,8 +170,8 @@ module.exports = function(app, passport) {
       process.env.TWILIO_AUTH_TOKEN
     );
     client.messages.create({
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: process.env.CELL_PHONE_NUMBER,
+      from: process.env.TWILIO_NUM,
+      to: doctorNumber,
       body: "Image for patient " + req.body.patientId  + "\n---------------\n\n" + req.body.image
     }).then((messsage) => {
       console.log(message.sid)

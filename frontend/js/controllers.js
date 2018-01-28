@@ -238,6 +238,26 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
         $rootScope.previewImg = img;
     }
 
+    $rootScope.sendMessage = function (d) {
+        $http({
+            url: 'http://54.209.93.68:3000/_msg',
+            method: "POST",
+            data: {doctorId: d[0], image:d[1], patientId:d[2]}
+        })
+        .then(function(response) {
+            console.log(response.data);
+            $scope.json = response.data;
+            $scope.requesting = false;
+
+        },
+        function(response) { // optional
+            console.log(response.data);
+            $scope.requesting = false;
+            alert('There was an error while submitting request.');
+        });
+
+    }
+
 
 
     $rootScope.randomDate = function(date1, date2){

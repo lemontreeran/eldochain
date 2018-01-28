@@ -55,7 +55,7 @@
                     <button type="button" ng-click="approvePatient(json,false)"
                             class="btn btn-outline-danger" data-dismiss="modal">Close
                     </button>
-                    <button type="button" ng-disabled="!doctorNumber" ng-click="sendMessage(previewImg,doctorNumber)" class="btn btn-outline-info">
+                    <button type="button" ng-disabled="!doctorNumber" ng-click="sendMessage([doctorNumber,previewImg,patientId])" class="btn btn-outline-info">
                         Send to mobile
                     </button>
                 </div>
