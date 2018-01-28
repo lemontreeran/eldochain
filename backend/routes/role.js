@@ -92,9 +92,8 @@ module.exports = function(app, passport) {
     })
   });
 
-  app.get("/_grantAccess", function(req, res) {
+  app.post("/_grantAccess", function(req, res) {
     req.checkBody('record', 'record must not be empty.').notEmpty();
-    req.checkBody('doctorGranting', 'doctorGranting must not be empty.').notEmpty();
     let errors = req.validationErrors();
     
     if (errors){

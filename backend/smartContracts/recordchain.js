@@ -327,7 +327,7 @@ class RecordChain {
 
 // TO GRANT ACCESS REQUEST
 // RecordChain.grantAccess({
-//   "$class": "org.recordchain.biznet.ApproveReject",
+//   "$class": "org.recordchain.biznet.GrantAccess",
 //   "record": {
 //     "$class": "org.recordchain.biznet.Record",
 //     "patientId": "p2",
