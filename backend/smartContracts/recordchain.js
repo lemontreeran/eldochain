@@ -3,6 +3,7 @@ const BusinessNetworkConnection = require('composer-client').BusinessNetworkConn
 
 // these are the credentials to use to connect to the Hyperledger Fabric
 let cardname = "admin@recordchain";
+const request = require("request");
 
 /** Class for the asset registry*/
 class RecordChain {
@@ -239,6 +240,70 @@ class RecordChain {
   }
 
 
+  /** Request _view transaction to check if user can view stuff.
+      @return {Promise} resolved when this update has completed
+  */
+  _view(Tnx) {
+   return this.bizNetworkConnection.getAssetRegistry('org.recordchain.biznet.Record')
+    .then((recordRegistry) => {
+      this.recordRegistry = recordRegistry;
+      return recordRegistry.get(Tnx.recordsId);
+    }).then((record) => {
+      console.log(record)
+      if (record.drCanView && (record.drCanView.length > 0)) {
+        console.log(record.drCanView)
+        console.log(Tnx.doctorId)
+        if (record.drCanView.indexOf(Tnx.doctorId) > -1) {
+          console.log("canView", true)
+          let url = 'https://api.github.com/repos/uchibeke/dhare/contents/_/_/_/f/i/l/e/s/' + Tnx.recordsId;
+          request({
+          headers: {
+              'User-Agent': 'MY IPHINE 7s'
+            },
+            uri: url,
+            method: 'GET'
+          }, function (err, res, body) {
+            let json = JSON.parse(body);
+            json = json.map(function(value) {
+              return value.download_url;
+            });
+            console.log(json);
+            return new Promise((resolve, reject)=> {
+              resolve({"canView": true, "documents": json});
+            })  
+          });
+        } else {
+          console.log("canView", false)
+          return new Promise((resolve, reject)=> {
+            resolve({"canView": false});
+          })  
+        }
+      } else {
+        console.log("canView", false)
+        return new Promise((resolve, reject)=> {
+          resolve({"canView": false});
+        })  
+      }
+    }).catch((view) => {
+      console.log("canView", false)
+      return new Promise((resolve, reject)=> {
+        resolve({"canView": false});
+      })  
+    })
+  }
+
+  /** External _view transaction.
+      @return {Promise} resolved when this update has completed
+  */
+  static view (Tnx) {
+    let registry = new RecordChain('recordchain');
+    return registry.init()
+    .then(() => {
+      return registry._view(Tnx);
+    })
+  }
+
+
 }
 
 // TO SUBMIT NEW REQUEST
@@ -249,14 +314,12 @@ class RecordChain {
 // })
 
 
-
 // TO APPROVE/REJECT A REQUEST
 // RecordChain.approveReject({
 //   "$class": "org.recordchain.biznet.ApproveReject",
 //   "record":{"patientId":"p1", "id":"p"},
 //   "approved":true
 // })
-
 
 
 // TO GRANT ACCESS REQUEST
@@ -269,6 +332,13 @@ class RecordChain {
 //     "recordOwner": "resource:org.recordchain.biznet.Doctor#d2"
 //   },
 //   "granted":true
+// })
+
+// TO CHECK IF DOCTOR CAN VIEW
+// RecordChain.view ({
+//   "$class": "org.recordchain.biznet.View",
+//   "doctorId": "d2",
+//   "recordsId":"p2"
 // })
 
 module.exports = RecordChain;
