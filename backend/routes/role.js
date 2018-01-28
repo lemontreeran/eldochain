@@ -92,6 +92,7 @@ module.exports = function(app, passport) {
 
   app.post("/_grantAccess", function(req, res) {
     req.checkBody('record', 'record must not be empty.').notEmpty();
+    req.checkBody('granted', 'granted must not be empty.').notEmpty();
     let errors = req.validationErrors();
     
     if (errors){
@@ -102,7 +103,8 @@ module.exports = function(app, passport) {
     let _GrantAccess = {
       "$class": namespace + "GrantAccess",
       "record": req.body['record'] , 
-      "doctorGranting": req.body['doctorGranting'] , 
+      "granted": req.body['granted'] , 
+      "doctorGranting": req.body['doctorGranting'] || "" , 
       
       
     };
