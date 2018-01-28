@@ -72,7 +72,6 @@ module.exports = function(app, passport) {
     let _ApproveReject = {
       "$class": namespace + "ApproveReject",
       "record": req.body['record'] , 
-      "userApproving": req.body['userApproving'] , 
       "approved": req.body['approved'] , 
       
       
@@ -81,7 +80,7 @@ module.exports = function(app, passport) {
     assetchain.approveReject(_ApproveReject).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
-        message: "added " + req.body['record'].join(" "),
+        message: "added " + req.body['record'],
         added: true
       })
     }).catch((error) => {
@@ -113,7 +112,7 @@ module.exports = function(app, passport) {
     assetchain.assignRole(_GrantAccess).then((x)=> {
       console.log("GOOD:=>\n",x) // Return OK response
       res.json({
-        message: "added " + req.body['record'].join(" "),
+        message: "added " + req.body['record'],
         added: true
       })
     }).catch((error) => {
