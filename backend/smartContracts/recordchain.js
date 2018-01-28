@@ -269,6 +269,7 @@ class RecordChain {
                 json = json.map(function(value) {
                   return value.download_url;
                 });
+                console.log(json)
                 return resolve({"canView": true, "data": json});
               } catch(e) {
                 return reject(e);

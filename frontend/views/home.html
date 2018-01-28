@@ -10,8 +10,8 @@
     </div>
     <hr>
     <div class="row">
-        <div class="col-md-4" ng-repeat="record in approvals track by $index">
-            <div class="card" style="width: 18rem;">
+        <div class="col-lg-3 col-md-6 col-xs-12" ng-repeat="record in approvals track by $index">
+            <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">{{record}}</h5>
                     <p class="card-text">User file generated: {{randomDate('01/27/2018','01/28/2018')}}</p>
@@ -38,11 +38,19 @@
                     <div class="modal-body">
                         Patient Record Owner: {{json.recordOwner.split('#')[1]}}
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer" ng-if="!isPatient()">
                         <button type="button" ng-click="approvePatientByDoctor(json,false)"
                                 class="btn btn-outline-danger" data-dismiss="modal">Reject
                         </button>
                         <button type="button" ng-click="approvePatientByDoctor(json,true)" class="btn btn-outline-info">
+                            Accept
+                        </button>
+                    </div>
+                    <div class="modal-footer" ng-if="isPatient()">
+                        <button type="button" ng-click="approvePatient(json,false)"
+                                class="btn btn-outline-danger" data-dismiss="modal">Reject
+                        </button>
+                        <button type="button" ng-click="approvePatient(json,true)" class="btn btn-outline-info">
                             Accept
                         </button>
                     </div>

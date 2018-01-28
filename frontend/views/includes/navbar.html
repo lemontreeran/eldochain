@@ -8,15 +8,19 @@
     <div class="collapse navbar-collapse navbar-center" id="navbarSupportedContent">
         <ul class="navbar-nav mx-auto">
             <li class="nav-item">
-                <a class="nav-link" ng-href="#/home" id='1'><i class="fa fa-home" aria-hidden="true"></i>&nbsp;Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" ng-href="#/home" id='1'><i class="fa fa-home" aria-hidden="true"
+                     data-toggle="collapse" data-target=".navbar-collapse.show"></i>&nbsp;Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ng-href="#/history"><i class="fa fa-history" aria-hidden="true"></i>&nbsp;History</a>
+                <a class="nav-link" ng-href="#/history"><i class="fa fa-history" aria-hidden="true"
+                     data-toggle="collapse" data-target=".navbar-collapse.show"></i>&nbsp;History</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ng-href="#/request"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;Make a Request</a>
+                <a class="nav-link" ng-href="#/request"><i class="fa fa-exchange" aria-hidden="true"
+                     data-toggle="collapse" data-target=".navbar-collapse.show"></i>&nbsp;Make a Request</a>
             </li>
         </ul>
+
         <ul class="navbar-nav my-2 my-lg-0 pr-5">
                     <li class="nav-item" ng-if="$storage.user">
                         <a href="" class="nav-link" ng-click="logoutRequest()">{{$storage.user}} &nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>

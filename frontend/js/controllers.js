@@ -53,6 +53,8 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
 
     $scope.pateintId = 'vishvajit79@gmail.com';
 
+    // Doctor1 transactions
+
     $rootScope.sendRequest = function() {
     	var data = { 'doctor' : $rootScope.userId, 'patient': $scope.patientId};
     	$scope.requesting = true;
@@ -81,17 +83,18 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             url: 'http://54.209.93.68:30001/api/Patient/' + data['pateintId'],
             method: "GET"
         })
-            .then(function(response) {
-                    $scope.approvals = response.data.approvals;
-                    $scope.json = response.data;
-                    $scope.requesting = false;
+        .then(function(response) {
+            console.log(response.data)
+            $scope.approvals = response.data.approvals;
+            $scope.json = response.data;
+            $scope.requesting = false;
 
-                },
-                function(response) { // optional
-                    console.log(response.data);
-                    $scope.requesting = false;
-                    alert('There was an error while submitting request.');
-                });
+        },
+        function(response) { // optional
+            console.log(response.data);
+            $scope.requesting = false;
+            alert('There was an error while submitting request.');
+        });
     };
 
     $rootScope.doctorDetails = function() {
@@ -102,9 +105,10 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             method: "GET"
         })
 		.then(function(response) {
-				$scope.approvals = response.data.approvals;
-				$scope.json = response.data;
-				$scope.requesting = false;
+            console.log(response.data)
+			$scope.approvals = response.data.approvals;
+			$scope.json = response.data;
+			$scope.requesting = false;
 
 		},
 		function(response) { // optional
@@ -141,17 +145,18 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             method: "POST",
 			data: data
         })
-            .then(function(response) {
-                    console.log(response.data);
-                    $scope.json = response.data;
-                    $scope.requesting = false;
+        .then(function(response) {
+                console.log(response.data);
+                $scope.json = response.data;
+                $scope.requesting = false;
+                window.location.reload();
 
-                },
-                function(response) { // optional
-                    console.log(response.data);
-                    $scope.requesting = false;
-                    alert('There was an error while submitting request.');
-                });
+            },
+            function(response) { // optional
+                console.log(response.data);
+                $scope.requesting = false;
+                alert('There was an error while submitting request.');
+            });
     };
 
     $rootScope.approvePatientByDoctor = function($record,$value) {
@@ -162,17 +167,18 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             method: "POST",
             data: data
         })
-            .then(function(response) {
-                    console.log(response.data);
-                    $scope.json = response.data;
-                    $scope.requesting = false;
+        .then(function(response) {
+                console.log(response.data);
+                $scope.json = response.data;
+                $scope.requesting = false;
+                window.location.reload();
 
-                },
-                function(response) { // optional
-                    console.log(response.data);
-                    $scope.requesting = false;
-                    alert('There was an error while submitting request.');
-                });
+            },
+            function(response) { // optional
+                console.log(response.data);
+                $scope.requesting = false;
+                alert('There was an error while submitting request.');
+            });
     };
 
     $rootScope.showDocument = function () {
@@ -184,17 +190,17 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             method: "POST",
             data: data
         })
-            .then(function(response) {
-                    console.log(response.data);
-                    $scope.json = response.data;
-                    $scope.requesting = false;
+        .then(function(response) {
+                console.log(response.data);
+                $scope.json = response.data;
+                $scope.requesting = false;
 
-                },
-                function(response) { // optional
-                    console.log(response.data);
-                    $scope.requesting = false;
-                    alert('There was an error while submitting request.');
-                });
+            },
+            function(response) { // optional
+                console.log(response.data);
+                $scope.requesting = false;
+                alert('There was an error while submitting request.');
+            });
     };
 
     $rootScope.historian = function () {
@@ -203,24 +209,33 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             url: 'http://54.209.93.68:30001/api/system/historian',
             method: "GET"
         })
-            .then(function(response) {
-                    $scope.historian = response.data;
-                    $scope.requesting = false;
+        .then(function(response) {
+                $scope.historian = response.data;
+                $scope.requesting = false;
 
-                },
-                function(response) { // optional
-                    console.log(response.data);
-                    $scope.requesting = false;
-                    alert('There was an error while submitting request.');
-                });
+            },
+            function(response) { // optional
+                console.log(response.data);
+                $scope.requesting = false;
+                alert('There was an error while submitting request.');
+            });
     };
 
+    $scope.isPatient = function () {
+        return $rootScope.userId == 'sam.benny@gmail.com';
+    }
+
     if($rootScope.userId != null){
-        $rootScope.patientDetails();
-        $rootScope.doctorDetails();
-        $rootScope.showDocument();
+        if ($scope.isPatient ()) {
+            $rootScope.patientDetails();
+        } else {
+            $rootScope.doctorDetails();
+        }
+        // $rootScope.showDocument();
         $rootScope.historian();
     }
+
+
 
     $rootScope.randomDate = function(date1, date2){
         function getRandomArbitrary(min, max) {
@@ -236,5 +251,6 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             return new Date(getRandomArbitrary(date1, date2)).toLocaleDateString()
 
         }
-    };
+    };  
+
 }]);
