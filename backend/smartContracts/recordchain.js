@@ -51,37 +51,49 @@ class RecordChain {
           patient.approvals = [];
           patient.approvals.push(Tnx.patient)
         }
-        // patient.approvals = (patient.approvals && (patient.approvals.length > 0)) ? patient.approvals.push(Tnx.patient) : [Tnx.patient]
         return this.patientRegistry.update(patient);
       }).then((updatedPatient) => {
-        if (Tnx.doctor) {
-          return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Doctor')
-          .then((doctorRegistry) => {
-            this.doctorRegistry = doctorRegistry;
-            return doctorRegistry.get(Tnx.doctor);
-          }).then((doctor) => {
-            if (doctor.requests && (doctor.requests.length > 0)) {
-              doctor.requests.push(Tnx.patient)
+        // Notify record.doc
+        return this.bizNetworkConnection.getAssetRegistry('org.recordchain.biznet.Record')
+        .then((recordRegistry) => {
+          this.recordRegistry = recordRegistry;
+          return recordRegistry.get(Tnx.patient);
+          }).then((record) => {
+            // Notify record.doc
+            if (Tnx.doctor) {
+              return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Doctor')
+              .then((doctorRegistry) => {
+                this.doctorRegistry = doctorRegistry;
+                return doctorRegistry.get(record.recordOwner.getIdentifier());
+              }).then((doctor) => {
+                if (doctor.approvals && (doctor.approvals.length > 0)) {
+                  doctor.approvals.push(Tnx.patient)
+                } else {
+                  doctor.approvals = [];
+                  doctor.approvals.push(Tnx.patient)
+                }
+                return this.doctorRegistry.update(doctor);
+              })
+              console.log("DONE")
             } else {
-              doctor.requests = [];
-              doctor.requests.push(Tnx.patient)
+              return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Institution')
+              .then((institutionRegistry) => {
+                console.log("Got institution Registry", institutionRegistry)
+                this.institutionRegistry = institutionRegistry;
+                return institutionRegistry.get(Tnx.institution);
+              }).then((institution) => {
+                institution.requests = institution.requests ? institution.requests.push(Tnx.patient) : [Tnx.patient]
+                return this.institutionRegistry.update(institution);
+              })
+              console.log("DONE")
             }
-            // doctor.requests = doctor.requests  && doctor.requests.length > 0 ? doctor.requests.push(Tnx.patient) : [Tnx.patient]
-            return this.doctorRegistry.update(doctor);
+            // patient.approvals = (patient.approvals && (patient.approvals.length > 0)) ? patient.approvals.push(Tnx.patient) : [Tnx.patient]
+            return this.patientRegistry.update(patient);
+          }).then((updatedPatient) => {
+
+
           })
-          console.log("DONE")
-        } else {
-          return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Institution')
-          .then((institutionRegistry) => {
-            console.log("Got institution Registry", institutionRegistry)
-            this.institutionRegistry = institutionRegistry;
-            return institutionRegistry.get(Tnx.institution);
-          }).then((institution) => {
-            institution.requests = institution.requests ? institution.requests.push(Tnx.patient) : [Tnx.patient]
-            return this.institutionRegistry.update(institution);
-          })
-          console.log("DONE")
-        }
+
       }).catch((error) => {
         console.log("ERROR:\n\n",error)
     });
@@ -106,10 +118,9 @@ class RecordChain {
       return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Patient')
       .then((patientRegistry) => {
         this.patientRegistry = patientRegistry;
-        let pID = Tnx.record.patient;
-        return patientRegistry.get(pID);
+        return patientRegistry.get( Tnx.record.patientId);
       }).then((patient) => {
-        let itemIdex = patient.approvals.indexOf(Tnx.record.Id)
+        let itemIdex = patient.approvals.indexOf(Tnx.record.patientId)
         console.log(itemIdex)
         if (itemIdex > -1) {
           patient.approvals.splice(itemIdex, 1);
@@ -156,24 +167,44 @@ class RecordChain {
       @return {Promise} resolved when this update has completed
   */
   _grantAccess(Tnx) {
+    console.log(Tnx)
     if (Tnx.granted == true) {
       return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Doctor')
       .then((doctorRegistry) => {
         this.doctorRegistry = doctorRegistry;
-        let dID = Tnx.doctorGranting;
-        return doctorRegistry.get(dID);
+        let dId = Tnx.record.recordOwner.split("#")[1];
+        console.log(dId)
+        this.dId = dId;
+        return doctorRegistry.get(dId);
       }).then((doctor) => {
-        let itemIdex = doctor.approvals.indexOf(Tnx.record.Id)
+        console.log(doctor)
+        // let itemIdex = doctor.approvals.indexOf(Tnx.record.recordOwner.getIdentifier())
+        console.log(doctor.approvals)
+        let itemIdex = doctor.approvals.indexOf(Tnx.record.patientId)
         console.log(itemIdex)
         if (itemIdex > -1) {
-          console.log("app len", doctor.approvals.length)
           doctor.approvals.splice(itemIdex, 1);
           console.log("app len", doctor.approvals.length)
-          return this.patientRegistry.update(patient)
+          return this.doctorRegistry.update(doctor)
           .then((approval) => {
             console.log("approved")
-            return new Promise((resolve, reject)=> {
-                resolve({"approved": true});
+            // update the record
+            return this.bizNetworkConnection.getAssetRegistry('org.recordchain.biznet.Record')
+            .then((recordRegistry) => {
+              this.recordRegistry = recordRegistry;
+              return recordRegistry.get(Tnx.record.patientId);
+            }).then((record) => {
+              if (record.drCanView && (record.drCanView.length > 0)) {
+                record.drCanView.push(this.dId)
+              } else {
+                record.drCanView = [];
+                record.drCanView.push(this.dId)
+              }
+              return this.recordRegistry.update(record);
+            }).then((updated) => {
+              return new Promise((resolve, reject)=> {
+                resolve({"approved": true, "record": updated});
+              })  
             })
           }).catch ((reject) => {
             console.log("Not approved internal", reject)
@@ -189,22 +220,55 @@ class RecordChain {
         }
       })
     } else {
-      console.log("Not granted false")
+      console.log("Not approved false")
       return new Promise((resolve, reject)=> {
-          resolve({"approved": false, "message":"Access not granted"});
+          resolve({"approved": false, "message":"Approval declined"});
       });
     }
   }
+
+  /** External _grantAccess transaction.
+      @return {Promise} resolved when this update has completed
+  */
+  static grantAccess(Tnx) {
+    let registry = new RecordChain('recordchain');
+    return registry.init()
+    .then(() => {
+      return registry._grantAccess(Tnx);
+    })
+  }
+
+
 }
+
+// TO SUBMIT NEW REQUEST
 // RecordChain.requestAccess({
 //   "$class": "org.recordchain.biznet.Request",
 //   "doctor":"d1",
-//   "patient":"p1"
+//   "patient":"p2"
 // })
+
+
+
+// TO APPROVE/REJECT A REQUEST
 // RecordChain.approveReject({
 //   "$class": "org.recordchain.biznet.ApproveReject",
-//   "record":{"patient":"p1", "Id":"d1"},
+//   "record":{"patientId":"p1", "id":"p"},
 //   "approved":true
+// })
+
+
+
+// TO GRANT ACCESS REQUEST
+// RecordChain.grantAccess({
+//   "$class": "org.recordchain.biznet.ApproveReject",
+//   "record": {
+//     "$class": "org.recordchain.biznet.Record",
+//     "patientId": "p2",
+//     "name": "string",
+//     "recordOwner": "resource:org.recordchain.biznet.Doctor#d2"
+//   },
+//   "granted":true
 // })
 
 module.exports = RecordChain;

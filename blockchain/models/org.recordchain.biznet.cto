@@ -1,7 +1,7 @@
 namespace org.recordchain.biznet
 
-participant Patient identified by Id { 
-  o String Id
+participant Patient identified by id { 
+  o String id
   o String firstName optional
   o String lastName optional
   o String [] family optional
@@ -12,8 +12,8 @@ participant Patient identified by Id {
   o String [] approvals optional
 }
 
-participant Doctor identified by Id {
-  o String Id
+participant Doctor identified by id {
+  o String id
   o String firstName
   o String lastName
   o String [] approvals optional
@@ -22,25 +22,24 @@ participant Doctor identified by Id {
   o String phone
 }
 
-participant Institution identified by Id {
-  o String Id
+participant Institution identified by id {
+  o String id
   o String name
   o String [] requests
   o String email
   o String phone
 }
 
-asset Record identified by Id{
-  o String Id
-  o String name
-  o String patient
-  o String [] drCanView
-  o String [] ids
-  o Doctor recordOwner
+asset Record identified by patientId {
+  o String patientId
+  o String name optional
+  o String [] drCanView optional
+  o String [] ids optional
+  --> Doctor recordOwner
 }
 
-asset Procedure identified by Id{
-  o String Id
+asset Procedure identified by id{
+  o String id
   o String name
   --> Patient patient
   --> Doctor doctor
@@ -61,10 +60,9 @@ transaction ApproveReject {
 
 transaction GrantAccess {
   --> Record record
-  --> Doctor doctorGranting
+  o String doctorGranting
   o Boolean granted
 }
-
 
 transaction View {
   o String doctorId
