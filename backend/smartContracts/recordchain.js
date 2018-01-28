@@ -223,7 +223,7 @@ class RecordChain {
     } else {
       console.log("Not approved false")
       return new Promise((resolve, reject)=> {
-          resolve({"approved": false, "message":"Approval declined"});
+          resolve({"approved": false, "message":"granting declined"});
       });
     }
   }
