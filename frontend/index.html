@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="&copy;ShareDoc 2018 - ConUHacksIII">
+    <title style="text-align: center;">ShareDoc</title>
+    <link rel=icon href="images/favicon.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="css/style.css" media="all">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.3.2/sweetalert2.min.css" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.3.2/sweetalert2.all.min.js"></script>
+</head>
+<body class="container-fluid" ng-controller="ListController">
+<div ng-include="'views/includes/navbar.html'"></div>
+<div style="margin-bottom: 100px"></div>
+<div class="ng-view" autoscroll="true"></div>
+<div ng-include="'views/includes/footer.html'"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/controllers.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+
+<script src="https://use.fontawesome.com/be594f49cd.js"></script>
+<script>
+
+    function showContact() {
+       swal("Good job!", "Your message is on its way!", "success");
+
+    }
+    function showRequest() {
+        swal("Congratulations🎉!", "Request has been made!", "success");
+    }
+    function showLogin() {
+        swal("Welcome back!", "", "success");
+    }
+    function showLogout() {
+        swal("Good Bye!", "You have been logged out successfully", "success");
+    }
+</script>
+<script>
+    function myFunction(arr) {
+        var out = "";
+        var i;
+        for(i = 0; i < arr.length; i++) {
+            out += '<a href="' + arr[i].url + '">' +
+                arr[i].display + '</a><br>';
+        }
+        document.getElementById("id01").innerHTML = out;
+    }
+</script>
+<script type="text/javascript" src="/data.js"></script>
+</body>
+</html>

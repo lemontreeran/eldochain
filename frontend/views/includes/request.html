@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+        <div class="modal-header">
+            <div ng-if="requesting">
+                <img src="https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" width="100px" height="100px">
+                <h4>Please wait while the data is received from our server</h4>
+            </div>
+            <div ng-if="!requesting" class="text-center">
+                <img src="images/lego.svg" width="32" height="32">
+                <h5 class="modal-title text-center" id="exampleModalLabel">Make a request</h5>
+            </div>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            </button>
+        </div>
+        <form class="form-group">
+            <div class="modal-body">
+                <label for="pateintId"></label>Patient ID:
+                <input type="text" id="pateintId" ng-model="patientId" class="form-control" placeholder="Enter patient ID">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                <button class="btn standard-button" ng-click="sendRequest()">Send Request</button>
+            </div>
+        </form>
+    </div>
+</div>
