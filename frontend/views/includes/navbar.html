@@ -6,7 +6,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse navbar-center" id="navbarSupportedContent">
-        <ul class="navbar-nav mx-auto">
+        <ul class="navbar-nav mx-auto" ng-if="$storage.user">
             <li class="nav-item">
                 <a class="nav-link" ng-href="#/home" id='1'><i class="fa fa-home" aria-hidden="true"
                      data-toggle="collapse" data-target=".navbar-collapse.show"></i>&nbsp;Home <span class="sr-only">(current)</span></a>
@@ -27,7 +27,7 @@
 
         <ul class="navbar-nav my-2 my-lg-0 pr-5">
             <li class="nav-item" ng-if="!$storage.user">
-                <a href="" class="nav-link" ng-click="logoutRequest()">
+                <a href="/" class="nav-link">
                     <i class="fa fa-sign-in" aria-hidden="true"></i>Login</a>
             </li>
                     <li class="nav-item" ng-if="$storage.user">
