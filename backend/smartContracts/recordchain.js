@@ -288,12 +288,13 @@ class RecordChain {
           resolve({"canView": false});
         })  
       }
-    }).catch((view) => {
-      console.log("canView5", false)
-      return new Promise((resolve, reject)=> {
-        resolve({"canView": false});
-      })  
     })
+    // .catch((view) => {
+    //   console.log("canView5", false)
+    //   return new Promise((resolve, reject)=> {
+    //     resolve({"canView": false});
+    //   })  
+    // })
   }
 
   /** External _view transaction.

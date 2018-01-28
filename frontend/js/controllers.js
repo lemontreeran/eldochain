@@ -65,6 +65,7 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
 		.then(function(response) {
 			console.log(response.data)
 			$scope.requesting = false;
+            $location.path("/home");
 
             },
 		function(response) { // optional
@@ -181,7 +182,7 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
     };
 
     $rootScope.showDocument = function () {
-    	var data = {'doctorId': $rootScope.userId, 'recordsId': $rootScope.userId}
+    	var data = {'doctorId': $rootScope.userId, 'recordsId': $scope.patientId}
         $scope.requesting = true;
     	console.log(data);
         $http({
@@ -190,16 +191,16 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             data: data
         })
         .then(function(response) {
-                console.log(response.data);
-                $scope.json = response.data;
-                $scope.requesting = false;
+            console.log(response.data);
+            $scope.json = response.data;
+            $scope.requesting = false;
 
-            },
-            function(response) { // optional
-                console.log(response.data);
-                $scope.requesting = false;
-                alert('There was an error while submitting request.');
-            });
+        },
+        function(response) { // optional
+            console.log(response.data);
+            $scope.requesting = false;
+            alert('There was an error while submitting request.');
+        });
     };
 
     $rootScope.historian = function () {
@@ -220,7 +221,7 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
             });
     };
 
-    $scope.isPatient = function () {
+    $rootScope.isPatient = function () {
         return $rootScope.userId == 'sam.benny@gmail.com';
     }
 
@@ -230,7 +231,6 @@ function($rootScope, $scope, $http, $timeout, $location, $localStorage) {
         } else {
             $rootScope.doctorDetails();
         }
-        // $rootScope.showDocument();
         $rootScope.historian();
     }
 

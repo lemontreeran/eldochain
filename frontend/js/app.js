@@ -20,6 +20,9 @@ function($routeProvider) {
     }).when('/logout', {
         templateUrl : 'views/includes/login.html',
         controller : 'ListController'
+	}).when('/records', {
+        templateUrl : 'views/includes/records.html',
+        controller : 'ListController'
 	}).otherwise({
 		redirectTo : '/login'
 	});
