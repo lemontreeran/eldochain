@@ -1,9 +1,20 @@
 var guestControllers = angular.module('guestControllers', [])
 
-guestControllers.controller('ListController', ['$rootScope','$scope', '$http', '$timeout',
-function($rootScope, $scope, $http, $timeout) {
+guestControllers.controller('ListController', ['$rootScope','$scope', '$http', '$timeout', '$location',
+function($rootScope, $scope, $http, $timeout, $location) {
 	// $rootScope.userId = $scope.userId || 'vishvajit79@gmail.com';
-	$rootScope.userId = $scope.userId;
+    $rootScope.userId = $scope.userId;
+    $rootScope.userLogin = function() {
+        $rootScope.userId = $scope.userId;
+        userId = $scope.userId;
+        console.log(userId);
+		$location.path('/home');
+    };
+
+    $rootScope.logoutRequest = function () {
+        $rootScope.userId = null;
+        $location.path('/');
+    };
 
 
 	$scope.dateString = function() {
@@ -45,8 +56,10 @@ function($rootScope, $scope, $http, $timeout) {
 
             },
 		function(response) { // optional
-			// failed
-		});
+			console.log(response.data);
+            $scope.requesting = false;
+            alert('There was an error while submitting request.');
+        });
 		console.log(data);
-    }
+    };
 }]);
