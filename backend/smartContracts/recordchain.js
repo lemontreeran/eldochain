@@ -335,10 +335,10 @@ class RecordChain {
 // })
 
 // TO CHECK IF DOCTOR CAN VIEW
-// RecordChain.view ({
-//   "$class": "org.recordchain.biznet.View",
-//   "doctorId": "d2",
-//   "recordsId":"p2"
-// })
+RecordChain.view ({
+  "$class": "org.recordchain.biznet.View",
+  "doctorId": "d2",
+  "recordsId":"p2"
+})
 
 module.exports = RecordChain;
