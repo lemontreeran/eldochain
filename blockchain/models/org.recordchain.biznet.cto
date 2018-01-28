@@ -33,7 +33,7 @@ participant Institution identified by Id {
 asset Record identified by Id{
   o String Id
   o String name
-  --> Patient patient
+  o String Patient patient
   o String [] drCanView
   o String [] ids
   o Doctor recordOwner
@@ -62,6 +62,7 @@ transaction ApproveReject {
 transaction GrantAccess {
   --> Record record
   --> Doctor doctorGranting
+  o Boolean granted
 }
 
 

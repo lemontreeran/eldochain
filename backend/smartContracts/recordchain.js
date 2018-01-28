@@ -36,54 +36,6 @@ class RecordChain {
     }
   }
 
-  /** Assigns a role to a user..
-      @return {Promise} resolved when this update has completed
-  */
-  _assignRole(Assign) {
-    return this.bizNetworkConnection.getAssetRegistry('org.assetchain.biznet.Role')
-    .then((roleRegistry) => {
-      console.log("Got Role Registry", roleRegistry)
-      this.roleRegistry = roleRegistry;
-      return roleRegistry.exists(Assign.id);
-      }).then((exists) => {
-        console.log(exists ? "Role is is Registry" : "New Role")
-        if (exists) {
-          return this.roleRegistry.get(Assign.id)
-          .then((role) => {
-            role.members = role.members.concat(Assign.members.filter((item) => {
-              return role.members.indexOf(item) < 0;
-            }));
-            role.members = Array.from(new Set(role.members))
-            return this.roleRegistry.update(role);
-          })
-        } else {
-          // Get the factory.
-          var factory = this.businessNetworkDefinition.getFactory();
-          // Create a new asset.
-          var newAsset = factory.newResource('org.assetchain.biznet', 'Role', Assign.id);
-          // Set the properties of the new asset.
-          newAsset.id = Assign.id 
-          newAsset.name = Assign.name || "";
-          newAsset.members = Assign.members;
-          newAsset.assigner = factory.newRelationship('org.assetchain.biznet', 'User', Assign.assigner)
-          return this.roleRegistry.add(newAsset);
-        }
-      }).catch((error) => {
-        console.log("ERROR:\n\n",error)
-    });
-  }
-
-  /** External assign role function..
-      @return {Promise} resolved when this update has completed
-  */
-  static assignRole(Assign) {
-    let registry = new AssetRegistry('c-net');
-    return registry.init()
-    .then(() => {
-      return registry._assignRole(Assign);
-    })
-  }
-
   /** Request Access to a patient record..
       @return {Promise} resolved when this update has completed
   */
@@ -91,11 +43,10 @@ class RecordChain {
     return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Patient')
     .then((patientRegistry) => {
       this.patientRegistry = patientRegistry;
-      this.requester = Tnx.doctor || doctor.institution
       return patientRegistry.get(Tnx.patient);
       }).then((patient) => {
         console.log("app len", patient.approvals.length)
-        patient.approvals = patient.approvals & patient.approvals.length > 0 ? patient.approvals.push(this.requester) : [this.requester]
+        patient.approvals = patient.approvals & patient.approvals.length > 0 ? patient.approvals.push(Tnx.patient) : [Tnx.patient]
         return this.patientRegistry.update(patient);
       }).then((updatedPatient) => {
         if (Tnx.doctor) {
@@ -107,6 +58,7 @@ class RecordChain {
             doctor.requests = doctor.requests  & doctor.requests.length > 0 ? doctor.requests.push(Tnx.patient) : [Tnx.patient]
             return this.doctorRegistry.update(doctor);
           })
+          console.log("DONE")
         } else {
           return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Institution')
           .then((institutionRegistry) => {
@@ -124,7 +76,7 @@ class RecordChain {
     });
   }
 
-  /** External _userRoles function..
+  /** External _requestAccess function..
       @return {Promise} resolved when this update has completed
   */
   static requestAccess(Tnx) {
@@ -135,5 +87,113 @@ class RecordChain {
     })
   }
 
+  /** Request approveReject transaction.
+      @return {Promise} resolved when this update has completed
+  */
+  _approveReject(Tnx) {
+    if (Tnx.approved == true) {
+      return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Patient')
+      .then((patientRegistry) => {
+        this.patientRegistry = patientRegistry;
+        let pID = Tnx.record.patient;
+        return patientRegistry.get(pID);
+      }).then((patient) => {
+        let itemIdex = patient.approvals.indexOf(Tnx.record.Id)
+        console.log(itemIdex)
+        if (itemIdex > -1) {
+          patient.approvals.splice(itemIdex, 1);
+          console.log("app len", patient.approvals.length)
+          return this.patientRegistry.update(patient)
+          .then((approval) => {
+            console.log("approved")
+            return new Promise((resolve, reject)=> {
+                resolve({"approved": true});
+            })
+          }).catch ((reject) => {
+            console.log("Not approved internal", reject)
+            return new Promise((resolve, reject)=> {
+                resolve({"approved": false, "error": reject});
+            })
+          })
+        } else {
+          return new Promise((resolve, reject)=> {
+              resolve({"approved": false, "error": "Record not found" });
+          })
+
+        }
+      })
+    } else {
+      console.log("Not approved false")
+      return new Promise((resolve, reject)=> {
+          resolve({"approved": false, "message":"Approval declined"});
+      });
+    }
+  }
+
+  /** External approveReject transaction.
+      @return {Promise} resolved when this update has completed
+  */
+  static approveReject(Tnx) {
+    let registry = new RecordChain('recordchain');
+    return registry.init()
+    .then(() => {
+      return registry._approveReject(Tnx);
+    })
+  }
+
+  /** Request _grantAccess transaction.
+      @return {Promise} resolved when this update has completed
+  */
+  _grantAccess(Tnx) {
+    if (Tnx.granted == true) {
+      return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Doctor')
+      .then((doctorRegistry) => {
+        this.doctorRegistry = doctorRegistry;
+        let dID = Tnx.doctorGranting;
+        return doctorRegistry.get(dID);
+      }).then((doctor) => {
+        let itemIdex = doctor.approvals.indexOf(Tnx.record.Id)
+        console.log(itemIdex)
+        if (itemIdex > -1) {
+          console.log("app len", doctor.approvals.length)
+          doctor.approvals.splice(itemIdex, 1);
+          console.log("app len", doctor.approvals.length)
+          return this.patientRegistry.update(patient)
+          .then((approval) => {
+            console.log("approved")
+            return new Promise((resolve, reject)=> {
+                resolve({"approved": true});
+            })
+          }).catch ((reject) => {
+            console.log("Not approved internal", reject)
+            return new Promise((resolve, reject)=> {
+                resolve({"approved": false, "error": reject});
+            })
+          })
+        } else {
+          return new Promise((resolve, reject)=> {
+              resolve({"approved": false, "error": "Record not found" });
+          })
+
+        }
+      })
+    } else {
+      console.log("Not granted false")
+      return new Promise((resolve, reject)=> {
+          resolve({"approved": false, "message":"Access not granted"});
+      });
+    }
+  }
 }
+RecordChain.requestAccess({
+  "$class": "org.recordchain.biznet.Request",
+  "doctor":"d1",
+  "patient":"p1"
+})
+// RecordChain.approveReject({
+//   "$class": "org.recordchain.biznet.ApproveReject",
+//   "record":{"patient":"p1", "Id":"d1"},
+//   "approved":true
+// })
+
 module.exports = RecordChain;
