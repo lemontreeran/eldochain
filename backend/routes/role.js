@@ -152,6 +152,8 @@ module.exports = function(app, passport) {
       })
     })
 
+  });
+
   app.post("/_msg", function(req, res) {
     req.checkBody('doctorId', 'doctorId must not be empty.').notEmpty();
     req.checkBody('image', 'image must not be empty.').notEmpty();
@@ -178,7 +180,6 @@ module.exports = function(app, passport) {
         sent: true
       })
     });
-
   });
 }
 //-------------------------------------------------------------------------------------------------------
