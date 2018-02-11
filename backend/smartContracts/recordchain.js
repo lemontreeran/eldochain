@@ -1,13 +1,12 @@
 'use strict';
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
-
-// these are the credentials to use to connect to the Hyperledger Fabric
-let cardname = "admin@recordchain";
 const request = require("request");
 
-/** Class for the asset registry*/
-class RecordChain {
+// these are the credentials to use to connect to the Hyperledger Fabric Blockchain
+let cardname = process.env.NETWORK_CARD;
 
+/** Class for the blockchain asset registry*/
+class RecordChain {
   /**
    * Need to have the mapping from bizNetwork name to the URLs to connect to.
    * bizNetwork nawme will be able to be used by Composer to get the suitable model files.
@@ -17,7 +16,7 @@ class RecordChain {
     this.bizNetworkConnection = new BusinessNetworkConnection();
   }
 
-  /** @description Initalizes the LandRegsitry by making a connection to the Composer runtime
+  /** @description Initalizes the RecordChain by making a connection to the Composer runtime
    * @return {Promise} A promise whose fullfillment means the initialization has completed
    */
   init() {
@@ -54,13 +53,11 @@ class RecordChain {
         }
         return this.patientRegistry.update(patient);
       }).then((updatedPatient) => {
-        // Notify record.doc
         return this.bizNetworkConnection.getAssetRegistry('org.recordchain.biznet.Record')
         .then((recordRegistry) => {
           this.recordRegistry = recordRegistry;
           return recordRegistry.get(Tnx.patient);
           }).then((record) => {
-            // Notify record.doc
             if (Tnx.doctor) {
               return this.bizNetworkConnection.getParticipantRegistry('org.recordchain.biznet.Doctor')
               .then((doctorRegistry) => {
@@ -88,7 +85,6 @@ class RecordChain {
               })
               console.log("DONE")
             }
-            // patient.approvals = (patient.approvals && (patient.approvals.length > 0)) ? patient.approvals.push(Tnx.patient) : [Tnx.patient]
             return this.patientRegistry.update(patient);
           }).then((updatedPatient) => {
 
@@ -100,7 +96,7 @@ class RecordChain {
     });
   }
 
-  /** External _requestAccess function..
+  /** External _requestAccess function.
       @return {Promise} resolved when this update has completed
   */
   static requestAccess(Tnx) {
@@ -133,7 +129,7 @@ class RecordChain {
                 resolve({"approved": true});
             })
           }).catch ((reject) => {
-            console.log("Not approved internal", reject)
+            console.log("Not approved due to blockchain error", reject)
             return new Promise((resolve, reject)=> {
                 resolve({"approved": false, "error": reject});
             })
@@ -146,7 +142,7 @@ class RecordChain {
         }
       })
     } else {
-      console.log("Not approved false")
+      console.log("Rejected by user")
       return new Promise((resolve, reject)=> {
           resolve({"approved": false, "message":"Approval declined"});
       });
@@ -289,12 +285,6 @@ class RecordChain {
         })  
       }
     })
-    // .catch((view) => {
-    //   console.log("canView5", false)
-    //   return new Promise((resolve, reject)=> {
-    //     resolve({"canView": false});
-    //   })  
-    // })
   }
 
   /** External _view transaction.
@@ -310,6 +300,12 @@ class RecordChain {
 
 
 }
+
+module.exports = RecordChain;
+
+
+
+// TODO: Move to DOCS after Hackathon. JSON format for endpoints. Move to Doc
 
 // TO SUBMIT NEW REQUEST
 // RecordChain.requestAccess({
@@ -345,5 +341,3 @@ class RecordChain {
 //   "doctorId": "d2",
 //   "recordsId":"p2"
 // })
-
-module.exports = RecordChain;
