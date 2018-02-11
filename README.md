@@ -29,7 +29,7 @@
 
 ## About
 
-###Vishvajit
+### Vishvajit
 
 The final idea is to make a universal document controller that holds all different kind of document, files, etc that are confidential. Building this app via blockchain mechanism we can ensure that the file is accessible only to those with given permission (R/W) but it's different then gdrive
 
